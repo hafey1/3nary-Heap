@@ -11,7 +11,10 @@ public class MinHeap {
 	private int n; // Number of things now in heap
 
 	//refactor minheap to maxheap because we are creating it
-	// int num, int max
+
+	//
+	//
+	// The constructor takes the array, the number of elements currently inside, and max size
 	public MinHeap(Comparable[] h)
 	{	Heap = h;
 		for (int i = 0; i < h.length; i++) {
@@ -23,11 +26,11 @@ public class MinHeap {
 				n = i + 1 ;
 			}
 		}
-		//n = num;
 		size = h.length;
 	}
 
 	@Override
+	//A real quick print out of the array
 	public String toString() {
 		String output = "";
 		for (int i = 0; i < Heap.length; i++) {
@@ -37,20 +40,22 @@ public class MinHeap {
 		return output;
 	}
 
+	//just returns the actual array
 	public Comparable[] getHeap() {
 		return Heap;
 	}
 
+	//this prints out each tri child nodes
+	//the first one is root
+	// then from there on it is the next tri elements
+	// then to each node its tri elements as children
+	// so at 0 level we have 1 element 3^0
+	// at 1 level we have 3 elements 3^1
+	// at 2 level we have 9 elements 3^2
+	// so on so forth
 	public void printDebug() {
 		System.out.println(Heap[0]);
 		for (int i = 1; i < size; i = i + 3) {
-//			try {
-//				System.out.printf(Heap[i] + " || ");
-//				System.out.printf(" " + Heap[i + 1] + " || ");
-//				System.out.println(" " + Heap[i + 2] + "\n");
-//			} catch (ArrayIndexOutOfBoundsException e) {
-//				break;
-//			}
 			if (i <= n - 1)
 			System.out.printf(Heap[i] + " || ");
 			if (i + 1 <= n - 1) {
@@ -63,9 +68,7 @@ public class MinHeap {
 		}
 	}
 
-	//public void insert(Comparable key)
-
-
+// this modifies a given position in the array and then heapifies as necessary to resort the array
 	public void modify(int pos, Comparable newVal) {
 		if ((pos < 0) || (pos >= n))
 			return;
@@ -73,6 +76,8 @@ public class MinHeap {
 		update(pos);
 	}
 
+	//this is a helper function for making sure that the received pos is in the appropriate position in the array
+	//the first part moves a value up if it is smaller
 	private void update(int pos) {
 		// If a value is small it needs to go up
 		while ((pos > 0) && (Heap[pos].compareTo(Heap[parent(pos)]) <= 0)) {
@@ -81,8 +86,9 @@ public class MinHeap {
 		}
 		siftdown(pos);
 	}
+
 	//this is a helper method for the breadthFirst to find height
-	public int height(int root) {
+	private int height(int root) {
 
 		if (this.leftchild(root) == -1)
 			return 1;
@@ -143,12 +149,11 @@ public class MinHeap {
 			this.swap(parent(curr), curr);
 			curr = parent(curr);
 
-
-			// This is the Books method Swap.swap(Heap, curr, parent(curr));
 		}
 
 	}
 
+	//this heapifies the given array by getting max internal node index and partially ordering at each incrementation down
 	public void buildheap()
 	{
 		for (int i = (n - 1)/ 3; i >= 0; i--) {
@@ -156,6 +161,7 @@ public class MinHeap {
 		}
 	}
 
+	//private helper swap method
 	private void swap (int parent, int child) {
 		Comparable temp = Heap[parent];
 		Heap[parent] = Heap[child];
@@ -204,6 +210,7 @@ public class MinHeap {
 		}
 	}
 
+	//this removes the min value from the minheap and adjusts the heap accordingly
 	Comparable removeMin() {
 		//can't remove from an empty heap
 		if (n == 0)
@@ -213,8 +220,10 @@ public class MinHeap {
 		return Heap[n];
 	}
 
+	//this removes the value at the given position in the array and adjusts the heap accordingly
 	Comparable remove(int pos) {
 		if ((pos < 0) || (pos >= n)) {
+			System.out.println("Error can not remove something in the list");
 			return -1;
 		}
 		if (pos == (n-1)) n--;
@@ -225,6 +234,8 @@ public class MinHeap {
 		return Heap[n];
 	}
 
+	//this prints out a Breadth first traversal of the nodes with new lines inbetween the levels to mimic the structure
+	//of the tree
 	public void printBreadthFirst() {
 		int height = this.height(0);
 		int index = 0;
@@ -238,30 +249,25 @@ public class MinHeap {
 			}
 			System.out.println();
 		}
-		//for (int i = 0; i)
-		//Queue<Integer> breadthFirstQueue= new LinkedList<Integer>();
-		//((LinkedList<Integer>) breadthFirstQueue).push(0);
-		//printBreadthFirst(breadthFirstQueue);
 	}
 
-
-
-	public int printDepthFirst() {
-		Deque<Integer> depthQueue = new LinkedList<Integer>();
-		printDepthFirst(0, depthQueue);
-
-		return 1;
+	//this is the driver function for the recursive method that prints out the depth first traversal
+	public void printDepthFirst() {
+		System.out.println();
+		printDepthFirst(0);
 	}
 
-	public int printDepthFirst(int root, Deque<Integer> depthTracker) {
-		depthTracker.offer(root);
-
-		if (leftchild(root) > n) {
+	//the recursive method
+	private int printDepthFirst(int root) {
+		//base cases if the return value is -1 or the value exceeds the number of values in the list
+		if (root == -1 || root >= n)
 			return -1;
-		}
-		printBreadthFirst(this.leftchild(root), depthTracker);
 
+		System.out.print(Heap[root] + " ");
+		printDepthFirst(leftchild(root));
+		printDepthFirst(midchild(root));
+		printDepthFirst(rightchild(root));
 		return 1;
-	}
 
+	}
 }
